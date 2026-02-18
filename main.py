@@ -51,15 +51,7 @@ class CrosswordSolver:
         word = self.words_to_place[index]
 
         if index == 0:
-            r = random.randint(4, 7)
-            c = random.randint(3, max(3, 8 - len(word)))
-            self._place(word, r, c, True)
-            self.placed_info.append({'word': word, 'row': r, 'col': c, 'is_horiz': True})
-            if self._backtrack(index + 1): return True
-            self._remove(word, r, c, True)
-            self.placed_info.pop()
-            return False
-
+            return self._extracted_from__backtrack(word, index)
         candidates = self._find_candidates(word)
         random.shuffle(candidates)
         for r, c, h in candidates:
@@ -69,6 +61,16 @@ class CrosswordSolver:
                 if self._backtrack(index + 1): return True
                 self._remove(word, r, c, h)
                 self.placed_info.pop()
+        return False
+
+    def _extracted_from__backtrack(self, word, index):
+        r = random.randint(4, 7)
+        c = random.randint(3, max(3, 8 - len(word)))
+        self._place(word, r, c, True)
+        self.placed_info.append({'word': word, 'row': r, 'col': c, 'is_horiz': True})
+        if self._backtrack(index + 1): return True
+        self._remove(word, r, c, True)
+        self.placed_info.pop()
         return False
 
     def _find_candidates(self, word):
